@@ -1,12 +1,12 @@
 {
   "name": "socialphoto-backend",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node dist/app.js",
     "build": "tsc",
-    "dev": "nodemon src/app.ts",
-    "type": "module"
+    "dev": "nodemon --exec tsx src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,7 @@
     "@types/node": "^25.0.10",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
