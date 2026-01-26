@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",           // Önemli: CommonJS yerine NodeNext
+    "module": "NodeNext", // Önemli: CommonJS yerine NodeNext
     "moduleResolution": "NodeNext", // Önemli
     "esModuleInterop": true,
     "strict": true,

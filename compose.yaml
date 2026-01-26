@@ -1,0 +1,20 @@
+services:
+  postgres: #service name
+    image: postgres:latest
+    restart: always #always restart even if manually stopped it restarts after docker daemon restarts
+    environment:
+      - POSTGRES_DB=postgres #database name
+      - POSTGRES_USER=postgres #database user
+      - POSTGRES_PASSWORD=prisma #database password
+    ports:
+      - "5432:5432" #port mapping
+    networks:
+      - prisma-network #default network for connecting other containers
+    volumes:
+      - postgres_data:/var/lib/postgresql #for persistent data
+    command: postgres -c listen_addresses='*' #Insecure for production allows postgres to listen on all interfaces
+networks:
+  prisma-network:
+
+volumes:
+  postgres_data:
