@@ -1,0 +1,40 @@
+services:
+  # --- Backend Servisi ---
+  api:
+    build: .
+    container_name: socialphoto_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      # Dikkat: Docker içinde host 'localhost' değil, servis adı 'db' olur!
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/socialphoto_db
+      - NODE_ENV=development
+    volumes:
+      # Bilgisayarındaki 'src' klasörünü Docker'a bağlar (Hot Reload için şart)
+      - ./src:/app/src
+      # node_modules'ü ezmemesi için koruma
+      - /app/node_modules
+    # Dockerfile'daki 'npm start'ı ezip geliştirme modunda çalıştırır
+    command: npm run dev
+    depends_on:
+      - db
+
+  # --- Veritabanı Servisi (PostgreSQL) ---
+  db:
+    image: postgres:15-alpine
+    container_name: socialphoto_db
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: socialphoto_db
+    ports:
+      - "5432:5432"
+    volumes:
+      # Verilerin kaybolmaması için Docker Volume kullanıyoruz
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
