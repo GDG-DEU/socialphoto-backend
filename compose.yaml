@@ -1,18 +1,30 @@
+version: "3.7"
+
 services:
-  postgres: #service name
-    image: postgres:latest
-    restart: always #always restart even if manually stopped it restarts after docker daemon restarts
+  postgres:
+    image: postgres:15
+    restart: always
     environment:
-      - POSTGRES_DB=postgres #database name
-      - POSTGRES_USER=postgres #database user
-      - POSTGRES_PASSWORD=prisma #database password
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=prisma
     ports:
-      - "5432:5432" #port mapping
+      - "5432:5432"
     networks:
-      - prisma-network #default network for connecting other containers
+      - prisma-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
     volumes:
-      - postgres_data:/var/lib/postgresql #for persistent data
-    command: postgres -c listen_addresses='*' #Insecure for production allows postgres to listen on all interfaces
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 networks:
   prisma-network:
 
