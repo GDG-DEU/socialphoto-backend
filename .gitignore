@@ -4,3 +4,6 @@ dist/
 .idea/node_modules/
 
 /generated/prisma
+
+# Docker secrets
+secrets/
