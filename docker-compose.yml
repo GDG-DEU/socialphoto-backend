@@ -9,7 +9,7 @@ services:
     environment:
       - PORT=3000
       # Dikkat: Docker içinde host 'localhost' değil, servis adı 'db' olur!
-      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/socialphoto_db
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/socialphoto_db?schema=public
       - NODE_ENV=development
     volumes:
       # Bilgisayarındaki 'src' klasörünü Docker'a bağlar (Hot Reload için şart)
