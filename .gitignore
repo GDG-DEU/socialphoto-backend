@@ -3,7 +3,7 @@ node_modules/
 dist/
 .idea/node_modules/
 
-/generated/prisma
+/src/infrastructure/database/generated
 
 # Docker secrets
 secrets/
