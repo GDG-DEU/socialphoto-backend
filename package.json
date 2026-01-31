@@ -4,6 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "postinstall": "prisma generate --config src/infrastructure/config/prisma.config.ts",
     "start": "node dist/app.js",
     "build": "tsc",
     "dev": "nodemon --exec tsx src/app.ts"
