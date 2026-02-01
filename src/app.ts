@@ -14,6 +14,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors()); // Her yerden gelen isteklere izin ver (Dev ortamı için)
 app.use(express.json()); // JSON verilerini okuyabilmek için
 
+// Auth rotaları
+app.use("/auth", authRoutes);
+
 // Basit bir test rotası
 app.get("/", (req: Request, res: Response) => {
   res.json({
