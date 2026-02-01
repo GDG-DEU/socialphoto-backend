@@ -4,10 +4,8 @@ import express, {
   type Response,
 } from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-
-// Çevresel değişkenleri yükle (.env dosyası için)
-dotenv.config();
+import "./infrastructure/config/env.js"; // Validate env vars on startup
+import authRoutes from "./presentation/routes/index.js";
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
