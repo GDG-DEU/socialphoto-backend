@@ -4,6 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "postinstall": "prisma generate --config src/infrastructure/config/prisma.config.ts",
     "start": "node dist/app.js",
     "build": "tsc",
     "dev": "nodemon --exec tsx src/app.ts"
@@ -13,9 +14,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
     "axios": "^1.13.3",
     "cors": "^2.8.6",
-    "dotenv": "^17.2.3",
+    "dotenv": "^16.4.7",
     "express": "^5.2.1",
     "multer": "^2.0.2",
     "pg": "^8.17.2"
@@ -25,7 +28,9 @@
     "@types/express": "^5.0.6",
     "@types/multer": "^2.0.0",
     "@types/node": "^25.0.10",
+    "@types/pg": "^8.16.0",
     "nodemon": "^3.1.11",
+    "prisma": "^7.3.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

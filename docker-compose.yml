@@ -8,9 +8,10 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      # Dikkat: Docker içinde host 'localhost' değil, servis adı 'db' olur!
-      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/socialphoto_db
       - NODE_ENV=development
+    secrets:
+      - db_user
+      - db_password
     volumes:
       # Bilgisayarındaki 'src' klasörünü Docker'a bağlar (Hot Reload için şart)
       - ./src:/app/src
@@ -27,14 +28,23 @@ services:
     container_name: socialphoto_db
     restart: always
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       POSTGRES_DB: socialphoto_db
+    secrets:
+      - db_user
+      - db_password
     ports:
       - "5432:5432"
     volumes:
       # Verilerin kaybolmaması için Docker Volume kullanıyoruz
       - postgres_data:/var/lib/postgresql/data
+
+secrets:
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
 
 volumes:
   postgres_data:
