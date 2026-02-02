@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "postinstall": "prisma generate --config src/infrastructure/config/prisma.config.ts",
+    "postinstall": "prisma generate --schema src/infrastructure/database/prisma/schema.prisma",
     "start": "node dist/app.js",
     "build": "tsc",
     "dev": "nodemon --exec tsx src/app.ts"
@@ -14,8 +14,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
+    "@prisma/adapter-pg": "^6.0.0",
+    "@prisma/client": "^6.0.0",
     "axios": "^1.13.3",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
@@ -23,7 +23,9 @@
     "express": "^5.2.1",
     "jose": "^6.1.3",
     "multer": "^2.0.2",
-    "pg": "^8.17.2"
+    "pg": "^8.17.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -32,8 +34,10 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^25.0.10",
     "@types/pg": "^8.16.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "nodemon": "^3.1.11",
-    "prisma": "^7.3.0",
+    "prisma": "^6.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

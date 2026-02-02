@@ -6,45 +6,33 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    env_file:
+      - .env  # TÜM DEĞİŞKENLERİ BURADAN ÇEKER
     environment:
       - PORT=3000
       - NODE_ENV=development
-    secrets:
-      - db_user
-      - db_password
+      # DATABASE_URL'i buraya da yazıyoruz ki Docker içindeki 'db' ismini görsün
+      - DATABASE_URL=postgresql://postgres:12345@db:5432/socialphoto_db?schema=public
     volumes:
-      # Bilgisayarındaki 'src' klasörünü Docker'a bağlar (Hot Reload için şart)
       - ./src:/app/src
-      # node_modules'ü ezmemesi için koruma
       - /app/node_modules
-    # Dockerfile'daki 'npm start'ı ezip geliştirme modunda çalıştırır
     command: npm run dev
     depends_on:
       - db
 
-  # --- Veritabanı Servisi (PostgreSQL) ---
+  # --- Veritabanı Servisi ---
   db:
     image: postgres:15-alpine
     container_name: socialphoto_db
     restart: always
     environment:
-      POSTGRES_USER_FILE: /run/secrets/db_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-      POSTGRES_DB: socialphoto_db
-    secrets:
-      - db_user
-      - db_password
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=socialphoto_db
     ports:
       - "5432:5432"
     volumes:
-      # Verilerin kaybolmaması için Docker Volume kullanıyoruz
       - postgres_data:/var/lib/postgresql/data
-
-secrets:
-  db_user:
-    file: ./secrets/db_user.txt
-  db_password:
-    file: ./secrets/db_password.txt
 
 volumes:
   postgres_data:
