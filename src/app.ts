@@ -4,10 +4,8 @@ import express, {
   type Response,
 } from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-
-// Çevresel değişkenleri yükle (.env dosyası için)
-dotenv.config();
+import "./infrastructure/config/env.js"; // Validate env vars on startup
+import authRoutes from "./presentation/routes/index.js";
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +13,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware'ler
 app.use(cors()); // Her yerden gelen isteklere izin ver (Dev ortamı için)
 app.use(express.json()); // JSON verilerini okuyabilmek için
+
+// Auth rotaları
+app.use("/auth", authRoutes);
 
 // Basit bir test rotası
 app.get("/", (req: Request, res: Response) => {
