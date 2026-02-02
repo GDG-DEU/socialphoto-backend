@@ -5,6 +5,7 @@ import meRouter from "./me.js";
 
 const router = Router();
 
+// Rotalar
 router.use("/register", registerRouter);
 router.use("/login", loginRouter);
 router.use("/me", meRouter);
