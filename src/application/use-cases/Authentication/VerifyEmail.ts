@@ -22,6 +22,6 @@ export class VerifyEmail {
         }
 
         // 3. Kullanıcıyı onaylı olarak güncelle (Bu metodu Repository'e eklememiz gerekecek)
-        await this.userRepository.update(user.id, { is_verified: true }); 
+        await this.userRepository.update(user.id!, { is_verified: true }); 
     }
 }
