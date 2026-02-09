@@ -1,4 +1,4 @@
-import type { RegisterDTO } from "../../application/dto/auth-dto.js"; 
+import type { RegisterDTO } from "../../application/dto/auth.dto.js"; 
 import type { User } from "../entities/User.js"; 
 
 export interface AuthRepository {
