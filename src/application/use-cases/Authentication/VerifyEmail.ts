@@ -1,27 +1,31 @@
+import { RedisService } from "../../../infrastructure/services/RedisService.js";
 import type { IUserRepository } from "../../interfaces/repository/IUserRepository.js";
-import type { ITokenService } from "../../interfaces/ITokenService.js";
 
 export class VerifyEmail {
-    constructor(
-        private userRepository: IUserRepository,
-        private tokenService: ITokenService
-    ) {}
+    constructor(private userRepository: IUserRepository) {}
 
-    async execute(token: string): Promise<void> {
-        // 1. Token'ı doğrula (Kağan'ın yazdığı JwtTokenService'i kullanıyoruz)
-        const payload = await this.tokenService.verifyToken(token);
+    async execute(email: string, code: string): Promise<void> {
+        const redisKey = `verify_code:${email}`;
         
-        if (!payload || !payload.userId) {
-            throw new Error("Geçersiz veya süresi dolmuş doğrulama kodu");
+        const savedCode = await RedisService.get(redisKey);
+
+        if (!savedCode) {
+            throw new Error("Doğrulama kodunun süresi dolmuş veya hiç oluşturulmamış.");
         }
 
-        // 2. Kullanıcıyı bul
-        const user = await this.userRepository.findById(payload.userId);
+        if (savedCode !== code) {
+            throw new Error("Girdiğin kod hatalı, lütfen tekrar dene.");
+        }
+
+        const user = await this.userRepository.findByEmail(email);
         if (!user) {
-            throw new Error("Kullanıcı bulunamadı");
+            throw new Error("Kullanıcı bulunamadı.");
         }
 
-        // 3. Kullanıcıyı onaylı olarak güncelle (Bu metodu Repository'e eklememiz gerekecek)
-        await this.userRepository.update(user.id!, { is_verified: true }); 
+        await this.userRepository.update(user.id!, {
+            is_verified: true
+        });
+
+        await RedisService.del(redisKey);
     }
 }

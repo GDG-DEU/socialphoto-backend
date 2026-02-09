@@ -16,7 +16,7 @@ export interface UserResponseDTO {
   email: string;
   bio: string;
   avatar_url: string;
-  created_at: Date;
+  created_at: string;
 }
 
 // Login bilgilerini döndürür
