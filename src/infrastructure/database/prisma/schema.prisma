@@ -50,8 +50,9 @@ model User {
   notifications Notification[]
   profile       Profile?
   aiChatHistory AiChatHistory[]
-  followers     Follow[] @relation( "follower")
-  following     Follow[] @relation("following")
+  followers     Follow[]        @relation("follower")
+  following     Follow[]        @relation("following")
+  comments      Comment[]
 }
 
 model Post {
@@ -66,6 +67,18 @@ model Post {
   likes       Like[]
   photos      Photo[]
   postTags    PostTags[]
+  comments    Comment[]
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  post_id    String
+  user_id    String
+  content    String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @updatedAt @db.Timestamp(6)
+  post       Post     @relation(fields: [post_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
 }
 
 model Photo {
