@@ -11,6 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url = env("DATABASE_URL")
 }
 
 model Post {
@@ -27,11 +28,13 @@ model Post {
 
 model User {
   id            String   @id @default(cuid())
-  username      String
+  username      String   @unique
   email         String   @unique
-  password_hash String   @default("")
-  bio           String   @default("")
-  avatar_url    String   @default("")
+  password_hash String   // @default("") sildik, zorunlu yaptık
+  is_verified   Boolean  @default(false) // Bunu ekle kanka (Şart!)
+  bio           String?  @default("")
+  avatar_url    String?  @default("")
   created_at    DateTime @default(now()) @db.Timestamp(6)
+  updated_at    DateTime @updatedAt @db.Timestamp(6) // Bunu da ekle
   posts         Post[]
 }

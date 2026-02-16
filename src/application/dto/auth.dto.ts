@@ -24,3 +24,14 @@ export interface LoginResponseDTO {
   token: string;
   user: UserResponseDTO;
 }
+
+
+export interface PasswordChangeRequestDTO {
+    email: string; // Şifre sıfırlama linki gönderilecek adres
+}
+
+export interface PasswordChangeDTO {
+    token: string;    // Mailden gelen unique token
+    newPassword: string;
+    confirmPassword: string;
+}
