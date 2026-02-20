@@ -4,6 +4,30 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum NotificationType {
+  LIKE
+  FOLLOW
+  AI_COMPLETE
+}
+
+enum AIChatRole {
+  USER
+  ASSISTANT
+  TOOL
+  SYSTEM
+}
+
+enum PostStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -14,25 +38,127 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id             String   @id @default(cuid())
-  user_id        String
-  image_url      String
-  title          String
-  aestheticScore Float?   @default(0.0)
-  vectorId       String?
-  created_at     DateTime @default(now()) @db.Timestamp(6)
-  updated_at     DateTime @updatedAt @db.Timestamp(6)
-  user           User     @relation(fields: [user_id], references: [id])
+model User {
+  id            String          @id @default(cuid())
+  username      String          @unique
+  email         String          @unique
+  password_hash String          @default("")
+  created_at    DateTime        @default(now()) @db.Timestamp(6)
+  type          UserRole        @default(USER)
+  posts         Post[]
+  likes         Like[]
+  notifications Notification[]
+  profile       Profile?
+  aiChatHistory AiChatHistory[]
+  followers     Follow[]        @relation("follower")
+  following     Follow[]        @relation("following")
+  comments      Comment[]
 }
 
-model User {
-  id            String   @id @default(cuid())
-  username      String
-  email         String   @unique
-  password_hash String   @default("")
-  bio           String   @default("")
-  avatar_url    String   @default("")
-  created_at    DateTime @default(now()) @db.Timestamp(6)
-  posts         Post[]
+model Post {
+  id          String     @id @default(cuid())
+  user_id     String
+  title       String
+  description String
+  status      PostStatus @default(PENDING)
+  created_at  DateTime   @default(now()) @db.Timestamp(6)
+  updated_at  DateTime   @updatedAt @db.Timestamp(6)
+  user        User       @relation(fields: [user_id], references: [id])
+  likes       Like[]
+  photos      Photo[]
+  postTags    PostTags[]
+  comments    Comment[]
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  post_id    String
+  user_id    String
+  content    String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @updatedAt @db.Timestamp(6)
+  post       Post     @relation(fields: [post_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+}
+
+model Photo {
+  id              String  @id @default(cuid())
+  post_id         String
+  image_url       String
+  aesthetic_score Float?  @default(0.0)
+  vector_id       String?
+  post            Post    @relation(fields: [post_id], references: [id])
+}
+
+model Tags {
+  id       String     @id @default(cuid())
+  name     String     @unique
+  postTags PostTags[]
+}
+
+model PostTags {
+  post_id String
+  tag_id  String
+  post    Post   @relation(fields: [post_id], references: [id])
+  tag     Tags   @relation(fields: [tag_id], references: [id])
+
+  @@id([post_id, tag_id])
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  user_id    String
+  user       User             @relation(fields: [user_id], references: [id])
+  type       NotificationType
+  content    String
+  is_read    Boolean          @default(false)
+  target_id  String //it should be post or user_id
+  created_at DateTime         @default(now()) @db.Timestamp(6)
+}
+
+model Like {
+  user_id String
+  post_id String
+  user    User   @relation(fields: [user_id], references: [id])
+  post    Post   @relation(fields: [post_id], references: [id])
+
+  @@id([user_id, post_id])
+}
+
+model Follow {
+  follower_id  String
+  following_id String
+  follower     User   @relation("follower", fields: [follower_id], references: [id])
+  following    User   @relation("following", fields: [following_id], references: [id])
+
+  @@id([follower_id, following_id])
+}
+
+model AiChatHistory {
+  id           String     @id @default(cuid())
+  user_id      String
+  session_id   String
+  role         AIChatRole
+  content      String
+  tool_call_id String? // TOOL ROLE ONLY
+  tool_calls   Json? // ASSISTANT ROLE ONLY
+  user         User       @relation(fields: [user_id], references: [id])
+  created_at   DateTime   @default(now()) @db.Timestamp(6)
+
+  @@index(fields: [session_id], type: Hash) // type: Hash is for faster lookups for = searches
+}
+
+model Profile {
+  id           String   @id @default(cuid())
+  user_id      String   @unique
+  avatar_url   String   @default("")
+  full_name    String   @default("")
+  bio          String   @default("")
+  photo_style  String   @default("")
+  camera_gear  String   @default("")
+  avg_score    Float    @default(0.0)
+  social_links Json     @default("{}")
+  user         User     @relation(fields: [user_id], references: [id])
+  created_at   DateTime @default(now()) @db.Timestamp(6)
+  updated_at   DateTime @updatedAt @db.Timestamp(6)
 }
