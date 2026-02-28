@@ -1,6 +1,7 @@
 import type { IUserRepository } from "../../interfaces/repository/IUserRepository.js";
 import type { IPasswordHasher } from "../../interfaces/IPasswordHasher.js";
 import type { RegisterDTO, UserResponseDTO } from "../../dto/auth.dto.js";
+import {RegisterSchema} from "../../validation/authSchema.js";
 
 export class RegisterUser {
   constructor(
@@ -9,6 +10,13 @@ export class RegisterUser {
   ) {}
 
   async execute(dto: RegisterDTO): Promise<UserResponseDTO> {
+
+    //zod validation
+    const result = RegisterSchema.safeParse(dto);
+    if(!result.success){
+        throw new Error(result.error.message);
+    }
+
     const password_hash = await this.passwordHasher.hash(dto.password);
 
     const user = await this.userRepository.create({

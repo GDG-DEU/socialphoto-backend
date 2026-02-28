@@ -2,6 +2,7 @@ import type { IUserRepository } from "../../interfaces/repository/IUserRepositor
 import type { IPasswordHasher } from "../../interfaces/IPasswordHasher.js";
 import type { ITokenService } from "../../interfaces/ITokenService.js";
 import type { LoginDTO, LoginResponseDTO } from "../../dto/auth.dto.js";
+import {LoginSchema} from "../../validation/authSchema.js";
 
 export class LoginUser {
     constructor(
@@ -11,6 +12,13 @@ export class LoginUser {
     ) {}
 
     async execute(dto: LoginDTO): Promise<LoginResponseDTO> {
+
+        //zod validation
+        const result = LoginSchema.safeParse(dto);
+        if(!result.success){
+            throw new Error(result.error.message);
+        }
+
         const user = await this.userRepository.findByEmail(dto.email);
 
         if (!user) {
