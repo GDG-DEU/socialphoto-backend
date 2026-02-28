@@ -11,7 +11,7 @@ export class PasswordChange {
 
     // Kod Kontrolü
     if (!savedCode || savedCode !== code) {
-      throw new Error("Geçersiz veya süresi dolmuş doğrulama kodu kanka.");
+      throw new Error("Geçersiz veya süresi dolmuş doğrulama kodu");
     }
 
     // Kullanıcı Kontrolü
